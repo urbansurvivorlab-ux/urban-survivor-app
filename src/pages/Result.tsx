@@ -48,7 +48,14 @@ export const Result: React.FC = () => {
         <div className="text-6xl font-black text-white mb-2 tracking-tighter shadow-survivor-primary/50 drop-shadow-lg">
           {totalScore} <span className="text-2xl text-survivor-muted font-bold">/ 100</span>
         </div>
-        <p className="text-survivor-muted text-sm">現在の総合防衛力</p>
+        <p className="text-survivor-muted text-sm mb-4">現在の総合防衛力</p>
+        <p className="text-sm font-medium italic text-gray-300">
+          {totalScore >= 90 ? `「${totalScore}点。備えた父親が、家族を守る。」` :
+           totalScore >= 70 ? `「${totalScore}点。この家族は、いざというときに動ける。」` :
+           totalScore >= 50 ? `「${totalScore}点。備えは始まっている。あとは穴をふさぐだけだ。」` :
+           totalScore >= 30 ? `「${totalScore}点。これが今日のあなたの出発点だ。」` :
+           `「${totalScore}点。今日、あなたは現実を直視した。それが最初の一歩だ。」`}
+        </p>
       </div>
 
       <Card className="max-w-md mx-auto mb-8 relative overflow-hidden">

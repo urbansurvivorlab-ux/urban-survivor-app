@@ -5,6 +5,24 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 
+const CATEGORY_NAMES: Record<string, string> = {
+  management: '家族のルール',
+  education: '防災知識',
+  infrastructure: '安全な住環境',
+  stockpile: '備蓄と代替機能',
+  finance: '経済的備え',
+  community: '連携と情報網',
+};
+
+const CATEGORY_ORDER = [
+  'management',
+  'education',
+  'infrastructure',
+  'stockpile',
+  'finance',
+  'community'
+];
+
 export const Diagnosis: React.FC = () => {
   const navigate = useNavigate();
   const { setAnswer, calculateScores } = useAppContext();
@@ -12,6 +30,9 @@ export const Diagnosis: React.FC = () => {
   
   const question = questions[currentIndex];
   const progress = ((currentIndex) / questions.length) * 100;
+
+  const categoryIndex = CATEGORY_ORDER.indexOf(question.category) + 1;
+  const categoryName = CATEGORY_NAMES[question.category] || '';
 
   const handleAnswer = (score: number) => {
     // Contextに回答を保存
@@ -30,7 +51,7 @@ export const Diagnosis: React.FC = () => {
     <div className="py-6 min-h-[70vh] flex flex-col pt-12 animate-fade-in relative">
       <div className="mb-8 relative z-10 w-full max-w-xl mx-auto">
         <div className="flex justify-between text-survivor-muted text-sm mb-2 font-medium">
-          <span>診断中...</span>
+          <span>{categoryName} カテゴリ {categoryIndex} / 6</span>
           <span>{currentIndex + 1} / {questions.length}</span>
         </div>
         <ProgressBar progress={progress} color="primary" height="h-2" />
