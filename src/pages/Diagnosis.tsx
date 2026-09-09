@@ -6,19 +6,29 @@ import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 
 const CATEGORY_NAMES: Record<string, string> = {
-  infrastructure: '物理的安全性・インフラ',
-  stockpile: '物資供給・兵站',
-  communication: '情報通信・状況把握',
-  evacuation: '避難行動・装備',
-  governance: '社会的配慮・ガバナンス',
+  organize: '組織体制',
+  risk: 'リスクの把握',
+  finance: '財政基盤',
+  design: '都市開発・設計',
+  environment: '自然の緩衝機能',
+  capacity: '組織能力強化',
+  society: '社会的能力',
+  lifeline: 'インフラ強靭化',
+  response: '効果的な災害対応',
+  recovery: '復興の迅速化',
 };
 
 const CATEGORY_ORDER = [
-  'infrastructure',
-  'stockpile',
-  'communication',
-  'evacuation',
-  'governance'
+  'organize',
+  'risk',
+  'finance',
+  'design',
+  'environment',
+  'capacity',
+  'society',
+  'lifeline',
+  'response',
+  'recovery'
 ];
 
 export const Diagnosis: React.FC = () => {
@@ -49,7 +59,7 @@ export const Diagnosis: React.FC = () => {
     <div className="py-6 min-h-[70vh] flex flex-col pt-12 animate-fade-in relative">
       <div className="mb-8 relative z-10 w-full max-w-xl mx-auto">
         <div className="flex justify-between text-survivor-muted text-sm mb-2 font-medium">
-          <span>{categoryName} カテゴリ {categoryIndex} / 5</span>
+          <span>{categoryName} カテゴリ {categoryIndex} / 10</span>
           <span>{currentIndex + 1} / {questions.length}</span>
         </div>
         <ProgressBar progress={progress} color="primary" height="h-2" />

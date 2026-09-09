@@ -99,7 +99,7 @@ export const Mission: React.FC = () => {
                 <h3 className="font-bold text-lg text-white">総合的な避難セットの確保</h3>
                 <span className="bg-survivor-primary text-gray-900 text-xs font-bold px-2 py-0.5 rounded">即時実行推奨</span>
               </div>
-              {affiliateItems.stockpile.map(item => (
+              {(affiliateItems.lifeline || []).map(item => (
                 <Card key={item.id} className="p-5 overflow-hidden group">
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 space-y-3">

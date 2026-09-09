@@ -6,7 +6,8 @@ import { ChevronRight, AlertCircle, TrendingUp } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
-import { calculateWeakPoints, getLevelText } from '../utils/scoreCalculator';
+import { calculateWeakPoints, getLevelText, maxScores, categoryLabels } from '../utils/scoreCalculator';
+import type { Category } from '../types';
 
 export const Result: React.FC = () => {
   const navigate = useNavigate();
@@ -27,13 +28,16 @@ export const Result: React.FC = () => {
   }, [history]);
 
   // レーダーチャート用のデータ整形
-  const data = [
-    { subject: '物理的安全性・インフラ', score: categoryScores.infrastructure, fullMark: 100 },
-    { subject: '物資供給・兵站', score: categoryScores.stockpile, fullMark: 100 },
-    { subject: '情報通信・状況把握', score: categoryScores.communication, fullMark: 100 },
-    { subject: '避難行動・装備', score: categoryScores.evacuation, fullMark: 100 },
-    { subject: '社会的配慮・ガバナンス', score: categoryScores.governance, fullMark: 100 },
+  // カテゴリごとに満点（10〜90点）が異なるため、全軸を達成率（%）で統一して描画する
+  const categoryOrder: Category[] = [
+    'organize', 'risk', 'finance', 'design', 'environment',
+    'capacity', 'society', 'lifeline', 'response', 'recovery'
   ];
+  const data = categoryOrder.map((cat) => ({
+    subject: categoryLabels[cat],
+    score: Math.round((categoryScores[cat] / maxScores[cat]) * 100),
+    fullMark: 100
+  }));
 
   return (
     <div className="py-6 animate-fade-in relative">
@@ -86,7 +90,7 @@ export const Result: React.FC = () => {
             {weakPoints.length > 0 ? (
               weakPoints.map(wp => (
                 <div key={wp.name} className="px-3 py-1.5 rounded-lg bg-survivor-accent/20 text-red-200 text-sm font-medium border border-survivor-accent/30 flex items-center gap-1">
-                  {wp.label} <span className="opacity-70 text-xs ml-1 font-normal">({Math.round(wp.score)}点)</span>
+                  {wp.label} <span className="opacity-70 text-xs ml-1 font-normal">(達成率{Math.round(wp.ratio * 100)}%)</span>
                 </div>
               ))
             ) : (

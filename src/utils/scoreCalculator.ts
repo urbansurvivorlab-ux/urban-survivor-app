@@ -1,33 +1,43 @@
 import type { Category } from '../types';
 
+// カテゴリごとの問数が5・5・5・5・4・5・5・9・4・3と不均等なため、満点もカテゴリごとに変わる（各設問10点満点×問数）
+export const maxScores: Record<Category, number> = {
+  organize: 50,     // 5問
+  risk: 50,         // 5問
+  finance: 50,       // 5問
+  design: 50,        // 5問
+  environment: 40,   // 4問
+  capacity: 50,       // 5問
+  society: 50,        // 5問
+  lifeline: 90,        // 9問
+  response: 40,         // 4問
+  recovery: 30           // 3問
+};
+
+export const categoryLabels: Record<Category, string> = {
+  organize: '組織体制',
+  risk: 'リスクの把握',
+  finance: '財政基盤',
+  design: '都市開発・設計',
+  environment: '自然の緩衝機能',
+  capacity: '組織能力強化',
+  society: '社会的能力',
+  lifeline: 'インフラ強靭化',
+  response: '効果的な災害対応',
+  recovery: '復興の迅速化'
+};
+
 export const calculateWeakPoints = (
   categoryScores: Record<Category, number>
 ) => {
-  // 各カテゴリの満点（10問 × 最大10点 = 100点）
-  const maxScores: Record<Category, number> = {
-    infrastructure: 100,
-    stockpile: 100,
-    communication: 100,
-    evacuation: 100,
-    governance: 100
-  };
-
   const weakPoints: { name: Category; label: string; score: number; ratio: number }[] = [];
-
-  const categoryLabels: Record<Category, string> = {
-    infrastructure: '物理的安全性・インフラ',
-    stockpile: '物資供給・兵站',
-    communication: '情報通信・状況把握',
-    evacuation: '避難行動・装備',
-    governance: '社会的配慮・ガバナンス'
-  };
 
   Object.entries(categoryScores).forEach(([cat, score]) => {
     const category = cat as Category;
     const max = maxScores[category];
     const ratio = score / max;
 
-    // 満点比率が50%未満を弱点とする（より厳格な判定）
+    // 達成率50%未満を弱点とする（より厳格な判定）
     if (ratio < 0.5) {
       weakPoints.push({
         name: category,

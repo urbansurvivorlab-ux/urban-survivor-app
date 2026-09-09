@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { UserProfile, Category, HistoryRecord } from '../types';
 import type { AffiliateItem } from '../data/affiliateItems';
 import { questions } from '../data/questions';
+import { maxScores } from '../utils/scoreCalculator';
 import Papa from 'papaparse';
 
 // スプレッドシート（CSV公開）のURL
@@ -34,17 +35,16 @@ const defaultProfile: UserProfile = {
   region: '東京'
 };
 
+const emptyCategoryScores: Record<Category, number> = {
+  organize: 0, risk: 0, finance: 0, design: 0, environment: 0,
+  capacity: 0, society: 0, lifeline: 0, response: 0, recovery: 0
+};
+
 const initialState: AppState = {
   profile: defaultProfile,
   answers: {},
   totalScore: 0,
-  categoryScores: {
-    infrastructure: 0,
-    stockpile: 0,
-    communication: 0,
-    evacuation: 0,
-    governance: 0
-  },
+  categoryScores: { ...emptyCategoryScores },
   history: [],
   affiliateItems: null
 };
@@ -66,24 +66,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const calculateScores = () => {
-    const newCategoryScores: Record<Category, number> = {
-      infrastructure: 0, stockpile: 0, communication: 0, evacuation: 0, governance: 0
-    };
+    const newCategoryScores: Record<Category, number> = { ...emptyCategoryScores };
 
-    let total = 0;
-
-    // TODO: ここで全質問のスコアを集計する。
-    // questions.tsの定義と現在のanswersを突き合わせて合計を出す
     Object.entries(state.answers).forEach(([qId, score]) => {
       const question = questions.find(q => q.id === qId);
       if (question) {
         newCategoryScores[question.category] += score;
-        total += score;
       }
     });
 
-    // 総合スコア（最大500点満点となるため、100点満点の平均値に換算）
-    const finalTotal = Math.round(total / 5);
+    // カテゴリごとに満点が異なる（50〜90点）ため、単純合計÷カテゴリ数ではなく、
+    // 各カテゴリの達成率(%)を先に出してから平均する（実用書10章版付録の採点方式と一致）
+    const categories = Object.keys(newCategoryScores) as Category[];
+    const ratios = categories.map((cat) => newCategoryScores[cat] / maxScores[cat]);
+    const avgRatio = ratios.reduce((sum, r) => sum + r, 0) / ratios.length;
+    const finalTotal = Math.round(avgRatio * 100);
 
     // 履歴に追加
     const newRecord: HistoryRecord = {
@@ -97,7 +94,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const updatedHistory = [...prev.history, newRecord];
       // localStorageに保存
       localStorage.setItem('survivor_history', JSON.stringify(updatedHistory));
-      
+
       return {
         ...prev,
         totalScore: finalTotal,
@@ -128,9 +125,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           skipEmptyLines: true,
           complete: (results) => {
              const itemsByCategory: Record<Category, AffiliateItem[]> = {
-               infrastructure: [], stockpile: [], communication: [], evacuation: [], governance: []
+               organize: [], risk: [], finance: [], design: [], environment: [],
+               capacity: [], society: [], lifeline: [], response: [], recovery: []
              };
-             
+
              results.data.forEach((row: any, index) => {
                 const category = row.category as Category;
                 if (itemsByCategory[category]) {
@@ -150,7 +148,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       .catch(e => {
          console.error('Failed to load affiliate CSV:', e);
          // フォールバックとして空配列などを入れる（実際には元のTSファイルを使っても良い）
-         setState(prev => ({ ...prev, affiliateItems: { infrastructure: [], stockpile: [], communication: [], evacuation: [], governance: [] } }));
+         setState(prev => ({ ...prev, affiliateItems: {
+           organize: [], risk: [], finance: [], design: [], environment: [],
+           capacity: [], society: [], lifeline: [], response: [], recovery: []
+         } }));
       });
   }, []);
 
@@ -159,7 +160,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       ...prev,
       answers: {},
       totalScore: 0,
-      categoryScores: initialState.categoryScores
+      categoryScores: { ...emptyCategoryScores }
     }));
   };
 
