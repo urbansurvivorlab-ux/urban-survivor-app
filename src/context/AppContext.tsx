@@ -31,8 +31,7 @@ const defaultProfile: UserProfile = {
   children: 0,
   elderly: 0,
   pets: '0',
-  housingType: 'マンション',
-  region: '東京'
+  housingType: 'マンション'
 };
 
 const emptyCategoryScores: Record<Category, number> = {

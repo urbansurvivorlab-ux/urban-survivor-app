@@ -28,7 +28,6 @@ export interface UserProfile {
   elderly: number;
   pets: string;
   housingType: string;
-  region: string;
 }
 
 export interface DiagnosisResult {

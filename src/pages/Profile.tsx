@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Baby, Activity, Dog, Home, MapPin, ChevronRight, UserCircle } from 'lucide-react';
+import { Users, Baby, Activity, Dog, Home, ChevronRight, UserCircle } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
@@ -14,7 +14,6 @@ export const Profile: React.FC = () => {
     elderly: state.profile.elderly.toString(),
     pets: state.profile.pets,
     housingType: state.profile.housingType,
-    region: state.profile.region,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,7 +28,6 @@ export const Profile: React.FC = () => {
       elderly: parseInt(formData.elderly, 10),
       pets: formData.pets,
       housingType: formData.housingType,
-      region: formData.region,
     });
     navigate('/diagnosis');
   };
@@ -128,23 +126,12 @@ export const Profile: React.FC = () => {
             </div>
 
             {/* Field: Housing info (simplified) */}
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div>
-                <label className="block text-xs font-medium text-survivor-muted mb-1 flex items-center gap-1"><Home size={12}/> 住居</label>
-                <select name="housingType" value={formData.housingType} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white text-sm">
-                  <option value="マンション">マンション</option>
-                  <option value="戸建て">戸建て</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-survivor-muted mb-1 flex items-center gap-1"><MapPin size={12}/> 地域</label>
-                <select name="region" value={formData.region} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white text-sm">
-                  <option value="東京">東京</option>
-                  <option value="関東">関東</option>
-                  <option value="関西">関西</option>
-                  <option value="その他">その他</option>
-                </select>
-              </div>
+            <div className="pt-2">
+              <label className="block text-xs font-medium text-survivor-muted mb-1 flex items-center gap-1"><Home size={12}/> 住居</label>
+              <select name="housingType" value={formData.housingType} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white text-sm">
+                <option value="マンション">マンション</option>
+                <option value="戸建て">戸建て</option>
+              </select>
             </div>
 
           </div>

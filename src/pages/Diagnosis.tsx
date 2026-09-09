@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { questions } from '../data/questions';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
+import { getMaxScore, getPersonalizedHint, shouldAutoSkip } from '../utils/personalization';
 
 const CATEGORY_NAMES: Record<string, string> = {
   organize: '組織体制',
@@ -33,20 +34,38 @@ const CATEGORY_ORDER = [
 
 export const Diagnosis: React.FC = () => {
   const navigate = useNavigate();
-  const { setAnswer, calculateScores } = useAppContext();
+  const { state, setAnswer, calculateScores } = useAppContext();
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const question = questions[currentIndex];
-  const progress = ((currentIndex) / questions.length) * 100;
+
+  const { profile } = state;
+
+  // 世帯情報から見て明らかに「該当なし」の設問（子ども・ペット）は自動で満点にして出題から外す
+  const skippedQuestions = useMemo(
+    () => questions.filter((q) => shouldAutoSkip(q, profile)),
+    [profile]
+  );
+  const activeQuestions = useMemo(
+    () => questions.filter((q) => !shouldAutoSkip(q, profile)),
+    [profile]
+  );
+
+  useEffect(() => {
+    skippedQuestions.forEach((q) => setAnswer(q.id, getMaxScore(q)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skippedQuestions]);
+
+  const question = activeQuestions[currentIndex];
+  const progress = (currentIndex / activeQuestions.length) * 100;
 
   const categoryIndex = CATEGORY_ORDER.indexOf(question.category) + 1;
   const categoryName = CATEGORY_NAMES[question.category] || '';
+  const personalizedHint = getPersonalizedHint(question, profile);
 
   const handleAnswer = (score: number) => {
     // Contextに回答を保存
     setAnswer(question.id, score);
 
-    if (currentIndex < questions.length - 1) {
+    if (currentIndex < activeQuestions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       // 最後の質問の場合、スコアを計算して結果画面へ
@@ -60,19 +79,25 @@ export const Diagnosis: React.FC = () => {
       <div className="mb-8 relative z-10 w-full max-w-xl mx-auto">
         <div className="flex justify-between text-survivor-muted text-sm mb-2 font-medium">
           <span>{categoryName} カテゴリ {categoryIndex} / 10</span>
-          <span>{currentIndex + 1} / {questions.length}</span>
+          <span>{currentIndex + 1} / {activeQuestions.length}</span>
         </div>
         <ProgressBar progress={progress} color="primary" height="h-2" />
       </div>
 
       <div className="flex-grow flex flex-col justify-center items-center w-full max-w-xl mx-auto relative z-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-10 leading-relaxed px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-4 leading-relaxed px-4">
           Q. {question.text}
         </h2>
 
-        <div className="w-full space-y-3">
+        {personalizedHint && (
+          <p className="text-sm text-survivor-primary font-medium text-center mb-6 px-4">
+            {personalizedHint}
+          </p>
+        )}
+
+        <div className={`w-full space-y-3 ${personalizedHint ? '' : 'mt-6'}`}>
           {question.options.map((option, idx) => (
-            <Card 
+            <Card
               key={idx}
               hoverable
               onClick={() => handleAnswer(option.score)}
@@ -86,7 +111,7 @@ export const Diagnosis: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Background glow specific to category */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-survivor-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
     </div>
