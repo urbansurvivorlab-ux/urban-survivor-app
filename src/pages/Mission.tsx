@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, ChevronLeft, ShieldAlert, ChevronRight } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ShieldAlert, ChevronRight, HeartHandshake } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
@@ -46,6 +46,14 @@ export const Mission: React.FC = () => {
             </div>
           </div>
         </Card>
+
+        {/* モラロジー的な一言：まず自分の家族、その上で地域へ */}
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/5">
+          <HeartHandshake className="w-5 h-5 text-survivor-primary shrink-0 mt-0.5" />
+          <p className="text-xs text-gray-400 leading-relaxed">
+            まずは自分の家族の分を確保すること。その上で余力があれば、備えを地域と分け合うことも、いざという時の助け合いにつながります。
+          </p>
+        </div>
 
         {/* Action Missions based on All Weaknesses */}
         <div className="space-y-8">

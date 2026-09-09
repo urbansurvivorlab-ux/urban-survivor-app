@@ -1,21 +1,50 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { format } from 'date-fns';
-import { ChevronRight, AlertCircle, TrendingUp } from 'lucide-react';
+import { ChevronRight, AlertCircle, TrendingUp, Users2, Share2, Check } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 import { calculateWeakPoints, getLevelText, maxScores, categoryLabels } from '../utils/scoreCalculator';
 import type { Category } from '../types';
 
+const SHARE_URL = 'https://urban-survivor-app.vercel.app/';
+
 export const Result: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useAppContext();
   const { totalScore, categoryScores, history } = state;
+  const [shared, setShared] = useState(false);
 
   const levelText = getLevelText(totalScore);
   const weakPoints = calculateWeakPoints(categoryScores);
+
+  // 社会的能力（第7要素）の達成率が高い世帯には、家族だけでなく地域も守れる立場にあることを伝える
+  const societyRatio = categoryScores.society / maxScores.society;
+
+  const handleShare = async () => {
+    const shareData = {
+      title: '家庭防災スコアカード',
+      text: `我が家の総合防衛力スコアは${totalScore}点でした。あなたの家はどのくらい備えられていますか？`,
+      url: SHARE_URL
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // ユーザーがシェアをキャンセルした場合は何もしない
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        setShared(true);
+        setTimeout(() => setShared(false), 2000);
+      } catch {
+        // クリップボードにも失敗した場合は何もしない
+      }
+    }
+  };
 
   // 履歴グラフ用のデータ整形 (直近5件を表示)
   const historyData = useMemo(() => {
@@ -98,6 +127,16 @@ export const Result: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* 社会的能力が高い世帯への一言（家族の備えが地域の備えにもつながることを伝える） */}
+        {societyRatio >= 0.7 && (
+          <div className="mt-4 p-4 rounded-xl bg-survivor-primary/10 border border-survivor-primary/20 flex items-start gap-3">
+            <Users2 className="w-5 h-5 text-survivor-primary shrink-0 mt-0.5" />
+            <p className="text-sm text-gray-300 leading-relaxed">
+              社会的能力の達成率{Math.round(societyRatio * 100)}%。あなたは自分の家族を守れるだけでなく、いざという時に近所や地域の誰かを助けられる側にいます。
+            </p>
+          </div>
+        )}
       </Card>
 
       {/* History Chart */}
@@ -153,6 +192,19 @@ export const Result: React.FC = () => {
         <Button variant="danger" fullWidth onClick={() => navigate('/mission')} className="py-4">
           <span className="font-bold text-lg">緊急ミッションを確認する</span>
           <ChevronRight size={24} />
+        </Button>
+        <Button variant="outline" fullWidth onClick={handleShare} className="py-3">
+          {shared ? (
+            <>
+              <Check size={18} />
+              <span className="font-medium">コピーしました</span>
+            </>
+          ) : (
+            <>
+              <Share2 size={18} />
+              <span className="font-medium">家族や友人にもすすめる</span>
+            </>
+          )}
         </Button>
       </div>
     </div>
