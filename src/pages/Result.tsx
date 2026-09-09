@@ -28,12 +28,11 @@ export const Result: React.FC = () => {
 
   // レーダーチャート用のデータ整形
   const data = [
-    { subject: '家族のルール', score: categoryScores.management, fullMark: 100 },
-    { subject: '防災知識', score: categoryScores.education, fullMark: 100 },
-    { subject: '安全な住環境', score: categoryScores.infrastructure, fullMark: 100 },
-    { subject: '備蓄と代替機能', score: categoryScores.stockpile, fullMark: 100 },
-    { subject: '経済的備え', score: categoryScores.finance, fullMark: 100 },
-    { subject: '連携と情報網', score: categoryScores.community, fullMark: 100 },
+    { subject: '物理的安全性・インフラ', score: categoryScores.infrastructure, fullMark: 100 },
+    { subject: '物資供給・兵站', score: categoryScores.stockpile, fullMark: 100 },
+    { subject: '情報通信・状況把握', score: categoryScores.communication, fullMark: 100 },
+    { subject: '避難行動・装備', score: categoryScores.evacuation, fullMark: 100 },
+    { subject: '社会的配慮・ガバナンス', score: categoryScores.governance, fullMark: 100 },
   ];
 
   return (

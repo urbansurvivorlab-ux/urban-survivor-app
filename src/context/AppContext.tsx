@@ -39,12 +39,11 @@ const initialState: AppState = {
   answers: {},
   totalScore: 0,
   categoryScores: {
-    management: 0,
-    education: 0,
     infrastructure: 0,
     stockpile: 0,
-    finance: 0,
-    community: 0
+    communication: 0,
+    evacuation: 0,
+    governance: 0
   },
   history: [],
   affiliateItems: null
@@ -68,7 +67,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const calculateScores = () => {
     const newCategoryScores: Record<Category, number> = {
-      management: 0, education: 0, infrastructure: 0, stockpile: 0, finance: 0, community: 0
+      infrastructure: 0, stockpile: 0, communication: 0, evacuation: 0, governance: 0
     };
 
     let total = 0;
@@ -83,8 +82,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     });
 
-    // 総合スコア（最大600点満点となるため、100点満点の平均値に換算）
-    const finalTotal = Math.round(total / 6);
+    // 総合スコア（最大500点満点となるため、100点満点の平均値に換算）
+    const finalTotal = Math.round(total / 5);
 
     // 履歴に追加
     const newRecord: HistoryRecord = {
@@ -129,7 +128,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           skipEmptyLines: true,
           complete: (results) => {
              const itemsByCategory: Record<Category, AffiliateItem[]> = {
-               management: [], education: [], infrastructure: [], stockpile: [], finance: [], community: []
+               infrastructure: [], stockpile: [], communication: [], evacuation: [], governance: []
              };
              
              results.data.forEach((row: any, index) => {
@@ -151,7 +150,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       .catch(e => {
          console.error('Failed to load affiliate CSV:', e);
          // フォールバックとして空配列などを入れる（実際には元のTSファイルを使っても良い）
-         setState(prev => ({ ...prev, affiliateItems: { management: [], education: [], infrastructure: [], stockpile: [], finance: [], community: [] } }));
+         setState(prev => ({ ...prev, affiliateItems: { infrastructure: [], stockpile: [], communication: [], evacuation: [], governance: [] } }));
       });
   }, []);
 

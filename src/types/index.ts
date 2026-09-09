@@ -1,4 +1,4 @@
-export type Category = 'management' | 'education' | 'infrastructure' | 'stockpile' | 'finance' | 'community';
+export type Category = 'infrastructure' | 'stockpile' | 'communication' | 'evacuation' | 'governance';
 
 export interface AnswerOption {
   label: string;
@@ -22,12 +22,11 @@ export interface UserProfile {
 }
 
 export interface DiagnosisResult {
-  management: number;
-  education: number;
   infrastructure: number;
   stockpile: number;
-  finance: number;
-  community: number;
+  communication: number;
+  evacuation: number;
+  governance: number;
   total: number;
 }
 

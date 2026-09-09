@@ -5,23 +5,21 @@ export const calculateWeakPoints = (
 ) => {
   // 各カテゴリの満点（10問 × 最大10点 = 100点）
   const maxScores: Record<Category, number> = {
-    management: 100,
-    education: 100,
     infrastructure: 100,
     stockpile: 100,
-    finance: 100,
-    community: 100
+    communication: 100,
+    evacuation: 100,
+    governance: 100
   };
 
   const weakPoints: { name: Category; label: string; score: number; ratio: number }[] = [];
 
   const categoryLabels: Record<Category, string> = {
-    management: '家族のルール',
-    education: '防災知識',
-    infrastructure: '安全な住環境',
-    stockpile: '備蓄と代替機能',
-    finance: '経済的備え',
-    community: 'ご近所と情報網'
+    infrastructure: '物理的安全性・インフラ',
+    stockpile: '物資供給・兵站',
+    communication: '情報通信・状況把握',
+    evacuation: '避難行動・装備',
+    governance: '社会的配慮・ガバナンス'
   };
 
   Object.entries(categoryScores).forEach(([cat, score]) => {
