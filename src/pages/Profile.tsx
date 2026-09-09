@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Baby, Activity, Dog, Home, ChevronRight, UserCircle } from 'lucide-react';
+import { Users, Baby, Activity, Accessibility, Dog, Home, ChevronRight, UserCircle } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
@@ -12,6 +12,7 @@ export const Profile: React.FC = () => {
     familySize: state.profile.familySize.toString(),
     children: state.profile.children.toString(),
     elderly: state.profile.elderly.toString(),
+    disabled: state.profile.disabled.toString(),
     pets: state.profile.pets,
     housingType: state.profile.housingType,
   });
@@ -26,6 +27,7 @@ export const Profile: React.FC = () => {
       familySize: parseInt(formData.familySize, 10),
       children: parseInt(formData.children, 10),
       elderly: parseInt(formData.elderly, 10),
+      disabled: parseInt(formData.disabled, 10),
       pets: formData.pets,
       housingType: formData.housingType,
     });
@@ -96,6 +98,24 @@ export const Profile: React.FC = () => {
                 <select 
                   name="elderly" 
                   value={formData.elderly} 
+                  onChange={handleChange}
+                  className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-survivor-primary transition-colors"
+                >
+                  {[0,1,2,3,4].map(num => <option key={num} value={num}>{num}人</option>)}
+                </select>
+              </div>
+            </div>
+
+            {/* Field: Disabled / 要配慮者 */}
+            <div className="flex items-center gap-4 border-b border-white/5 pb-4">
+              <div className="text-survivor-muted bg-white/5 p-2 rounded-lg">
+                <Accessibility size={20} />
+              </div>
+              <div className="flex-grow">
+                <label className="block text-sm font-medium text-white mb-1">身体障がい者・要配慮者の人数</label>
+                <select
+                  name="disabled"
+                  value={formData.disabled}
                   onChange={handleChange}
                   className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-survivor-primary transition-colors"
                 >

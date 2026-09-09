@@ -10,6 +10,8 @@ export const getMaxScore = (question: Question): number =>
 const AUTO_SKIP_RULES: Record<string, (profile: UserProfile) => boolean> = {
   org_3: (profile) => profile.children === 0, // 子どもの引き渡しルール
   org_4: (profile) => profile.pets === '0',   // ペットの同行避難
+  care_1: (profile) => profile.elderly === 0,  // 高齢者の避難時介助・投薬管理（アプリ限定設問）
+  care_2: (profile) => profile.disabled === 0, // 身体障がい者・要配慮者の福祉避難所登録（アプリ限定設問）
 };
 
 export const shouldAutoSkip = (question: Question, profile: UserProfile): boolean => {

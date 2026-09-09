@@ -26,6 +26,7 @@ export interface UserProfile {
   familySize: number;
   children: number;
   elderly: number;
+  disabled: number;
   pets: string;
   housingType: string;
 }

@@ -1,18 +1,22 @@
 import type { Category } from '../types';
+import { questions } from '../data/questions';
+import { getMaxScore } from './personalization';
 
-// カテゴリごとの問数が5・5・5・5・4・5・5・9・4・3と不均等なため、満点もカテゴリごとに変わる（各設問10点満点×問数）
-export const maxScores: Record<Category, number> = {
-  organize: 50,     // 5問
-  risk: 50,         // 5問
-  finance: 50,       // 5問
-  design: 50,        // 5問
-  environment: 40,   // 4問
-  capacity: 50,       // 5問
-  society: 50,        // 5問
-  lifeline: 90,        // 9問
-  response: 40,         // 4問
-  recovery: 30           // 3問
-};
+const ALL_CATEGORIES: Category[] = [
+  'organize', 'risk', 'finance', 'design', 'environment',
+  'capacity', 'society', 'lifeline', 'response', 'recovery'
+];
+
+// カテゴリごとの問数が不均等（アプリ限定の追加設問も含む）なため、
+// 満点は設問データから動的に算出する。questions.tsを変更しても自動的に追従する。
+export const maxScores: Record<Category, number> = ALL_CATEGORIES.reduce((acc, cat) => {
+  acc[cat] = 0;
+  return acc;
+}, {} as Record<Category, number>);
+
+questions.forEach((q) => {
+  maxScores[q.category] += getMaxScore(q);
+});
 
 export const categoryLabels: Record<Category, string> = {
   organize: '組織体制',

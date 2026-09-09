@@ -30,6 +30,7 @@ const defaultProfile: UserProfile = {
   familySize: 1,
   children: 0,
   elderly: 0,
+  disabled: 0,
   pets: '0',
   housingType: 'マンション'
 };
