@@ -102,7 +102,7 @@ export const Diagnosis: React.FC = () => {
       </div>
 
       <div className="flex-grow flex flex-col justify-center items-center w-full max-w-xl mx-auto relative z-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-4 leading-relaxed px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-left text-white mb-4 leading-relaxed px-4">
           Q. {question.text}
         </h2>
 
