@@ -38,7 +38,7 @@
 
   /* Critical Action Button */
   .btn-danger {
-    @apply bg-gradient-to-r from-survivor-accent to-red-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
+    @apply bg-gradient-to-r from-survivor-accent to-red-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2;
   }
 }
 
