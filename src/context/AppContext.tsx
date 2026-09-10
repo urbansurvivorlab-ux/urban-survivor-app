@@ -24,6 +24,7 @@ interface AppContextType {
   setAnswer: (questionId: string, score: number) => void;
   calculateScores: () => void;
   resetDiagnosis: () => void;
+  loadLatestResult: () => void;
 }
 
 const defaultProfile: UserProfile = {
@@ -173,8 +174,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
+  // ホーム画面から「前回の結果を見る」を選んだ際、診断をやり直さずに
+  // localStorage履歴の最新1件をtotalScore/categoryScoresへ反映してResult画面へ渡す
+  const loadLatestResult = () => {
+    setState(prev => {
+      if (prev.history.length === 0) return prev;
+      const latest = prev.history[prev.history.length - 1];
+      return {
+        ...prev,
+        totalScore: latest.totalScore,
+        categoryScores: latest.categoryScores
+      };
+    });
+  };
+
   return (
-    <AppContext.Provider value={{ state, setProfile, setAnswer, calculateScores, resetDiagnosis }}>
+    <AppContext.Provider value={{ state, setProfile, setAnswer, calculateScores, resetDiagnosis, loadLatestResult }}>
       {children}
     </AppContext.Provider>
   );

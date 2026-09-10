@@ -3,9 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Activity, AlertTriangle, TrendingUp, BadgeCheck } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
+import { useAppContext } from '../context/AppContext';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const { state, resetDiagnosis, loadLatestResult } = useAppContext();
+  const hasHistory = state.history.length > 0;
+
+  const handleStart = () => {
+    resetDiagnosis();
+    navigate('/profile');
+  };
+
+  const handleViewResult = () => {
+    loadLatestResult();
+    navigate('/result');
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] py-10 animate-fade-in relative">
@@ -38,14 +51,34 @@ export const Home: React.FC = () => {
         </div>
 
         <div className="flex flex-col items-center">
-          <Button
-            variant="primary"
-            className="text-lg py-4 px-10 rounded-full w-full sm:w-auto max-w-xs animate-pulse-glow mb-3"
-            onClick={() => navigate('/profile')}
-          >
-            <span className="font-extrabold">診断スタート</span>
-            <ChevronRight size={24} />
-          </Button>
+          {hasHistory ? (
+            <>
+              <Button
+                variant="primary"
+                className="text-lg py-4 px-10 rounded-full w-full sm:w-auto max-w-xs animate-pulse-glow mb-3"
+                onClick={handleViewResult}
+              >
+                <span className="font-extrabold">前回の結果を見る</span>
+                <ChevronRight size={24} />
+              </Button>
+              <button
+                type="button"
+                onClick={handleStart}
+                className="text-sm text-survivor-muted hover:text-survivor-primary underline underline-offset-2 mb-3"
+              >
+                もう一度診断する
+              </button>
+            </>
+          ) : (
+            <Button
+              variant="primary"
+              className="text-lg py-4 px-10 rounded-full w-full sm:w-auto max-w-xs animate-pulse-glow mb-3"
+              onClick={handleStart}
+            >
+              <span className="font-extrabold">診断スタート</span>
+              <ChevronRight size={24} />
+            </Button>
+          )}
           <p className="text-xs text-survivor-muted text-center leading-relaxed">
             無料・登録不要、平均所要時間は約10分<br/>
             再診断のたびに、あなたの家族の成長が記録される。
