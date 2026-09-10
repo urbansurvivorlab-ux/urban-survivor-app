@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
+import { ChevronRight, Activity, AlertTriangle, TrendingUp, BadgeCheck } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 
@@ -26,15 +26,20 @@ export const Home: React.FC = () => {
           家庭防災スコアカード
         </p>
         
-        <p className="text-survivor-muted max-w-lg mx-auto text-sm md:text-base leading-relaxed mb-10">
+        <p className="text-survivor-muted max-w-lg mx-auto text-sm md:text-base leading-relaxed mb-6">
           止まった都市は、嘘をつかない。<br />
           持っている者と、持っていない者を、<br />
           静かに、残酷に、選り分ける。
         </p>
-        
+
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold mb-6">
+          <BadgeCheck size={14} />
+          完全無料・登録不要
+        </div>
+
         <div className="flex flex-col items-center">
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             className="text-lg py-4 px-10 rounded-full w-full sm:w-auto max-w-xs animate-pulse-glow mb-3"
             onClick={() => navigate('/profile')}
           >
@@ -42,7 +47,7 @@ export const Home: React.FC = () => {
             <ChevronRight size={24} />
           </Button>
           <p className="text-xs text-survivor-muted text-center leading-relaxed">
-            平均所要時間：約10分<br/>
+            無料・登録不要、平均所要時間は約10分<br/>
             再診断のたびに、あなたの家族の成長が記録される。
           </p>
         </div>
@@ -55,7 +60,7 @@ export const Home: React.FC = () => {
             <Activity size={28} className="text-survivor-primary" />
           </div>
           <h3 className="font-bold text-white mb-2">可視化する</h3>
-          <p className="text-xs text-survivor-muted">6つのカテゴリであなたの生存能力を数値化します。</p>
+          <p className="text-xs text-survivor-muted">UNDRR「Ten Essentials」10の要素であなたの生存能力を数値化します。</p>
         </Card>
         
         <Card className="flex flex-col items-center text-center group cursor-default">
