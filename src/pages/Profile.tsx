@@ -164,13 +164,6 @@ export const Profile: React.FC = () => {
           </div>
         </form>
       </Card>
-      
-      {/* Step Indicator */}
-      <div className="flex justify-center gap-2 mt-8">
-        <div className="w-2 h-2 rounded-full bg-survivor-primary"></div>
-        <div className="w-2 h-2 rounded-full bg-white/20"></div>
-        <div className="w-2 h-2 rounded-full bg-white/20"></div>
-      </div>
     </div>
   );
 };

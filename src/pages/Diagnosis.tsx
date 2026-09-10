@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 import { questions } from '../data/questions';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { Card } from '../components/common/Card';
@@ -74,9 +75,25 @@ export const Diagnosis: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   return (
     <div className="py-6 min-h-[70vh] flex flex-col pt-12 animate-fade-in relative">
       <div className="mb-8 relative z-10 w-full max-w-xl mx-auto">
+        {currentIndex > 0 && (
+          <button
+            type="button"
+            onClick={handleBack}
+            className="flex items-center gap-1 text-survivor-muted hover:text-white text-sm font-medium mb-3 transition-colors"
+          >
+            <ChevronLeft size={16} />
+            前の質問に戻る
+          </button>
+        )}
         <div className="flex justify-between text-survivor-muted text-sm mb-2 font-medium">
           <span>{categoryName} カテゴリ {categoryIndex} / 10</span>
           <span>{currentIndex + 1} / {activeQuestions.length}</span>

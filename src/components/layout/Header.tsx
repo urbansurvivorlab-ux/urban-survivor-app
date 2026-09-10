@@ -11,10 +11,6 @@ export const Header: React.FC = () => {
             都市型サバイバー
           </h1>
         </Link>
-        
-        <div className="text-xs text-survivor-muted font-medium bg-black/40 px-3 py-1.5 rounded-full border border-white/10">
-          スコアカード BETA
-        </div>
       </div>
     </header>
   );
