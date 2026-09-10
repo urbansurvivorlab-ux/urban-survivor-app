@@ -53,7 +53,7 @@ export const Mission: React.FC = () => {
         {/* モラロジー的な一言：まず自分の家族、その上で地域へ */}
         <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/5">
           <HeartHandshake className="w-5 h-5 text-survivor-primary shrink-0 mt-0.5" />
-          <p className="text-xs text-gray-400 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             まずは自分の家族の分を確保すること。その上で余力があれば、備えを地域と分け合うことも、いざという時の助け合いにつながります。
           </p>
         </div>
@@ -61,7 +61,7 @@ export const Mission: React.FC = () => {
         {/* アフィリエイト開示（景品表示法のステルスマーケティング規制対応） */}
         <div className="flex items-start gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/5">
           <Info className="w-4 h-4 text-gray-500 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-gray-500 leading-relaxed">
+          <p className="text-sm text-gray-500 leading-relaxed">
             [PR] 以下の商品リンクはAmazonアソシエイト・プログラムを利用した広告リンクです。購入いただくと、当サイト運営者に紹介料が支払われる場合があります。
           </p>
         </div>
