@@ -11,6 +11,10 @@ import type { Category } from '../types';
 
 const SHARE_URL = 'https://urban-survivor-app.vercel.app/';
 
+// 実用書「都市型サバイバー 家庭防災スコアカード」のAmazon販売ページURL。
+// Kindle出版が完了しASINが発行されたらここに設定する。空の間は案内カード自体を表示しない。
+const BOOK_AMAZON_URL = '';
+
 export const Result: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useAppContext();
@@ -139,29 +143,31 @@ export const Result: React.FC = () => {
         )}
       </Card>
 
-      {/* もっと深く知りたい方への案内（アプリ→本・noteへの逆導線） */}
-      <Card className="max-w-md mx-auto mb-8 relative overflow-hidden">
-        <div className="flex items-start gap-3">
-          <div className="p-2.5 bg-survivor-primary/10 rounded-full text-survivor-primary shrink-0">
-            <BookOpen size={20} />
+      {/* もっと深く知りたい方への案内（アプリ→実用書への逆導線）。出版前はカード自体を非表示にする */}
+      {BOOK_AMAZON_URL && (
+        <Card className="max-w-md mx-auto mb-8 relative overflow-hidden">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 bg-survivor-primary/10 rounded-full text-survivor-primary shrink-0">
+              <BookOpen size={20} />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold text-white mb-1">もっと深く知りたい方へ</h4>
+              <p className="text-sm text-gray-400 leading-relaxed mb-3">
+                この診断のもとになったUNDRR「Ten Essentials」の考え方や、各項目の背景・具体的な備え方をさらに詳しく解説した実用書「都市型サバイバー 家庭防災スコアカード」を刊行しています。
+              </p>
+              <a
+                href={BOOK_AMAZON_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-survivor-primary hover:underline"
+              >
+                Amazonで詳しく見る
+                <ExternalLink size={14} />
+              </a>
+            </div>
           </div>
-          <div className="flex-1">
-            <h4 className="font-bold text-white mb-1">もっと深く知りたい方へ</h4>
-            <p className="text-sm text-gray-400 leading-relaxed mb-3">
-              この診断のもとになったUNDRR「Ten Essentials」の考え方や、各項目の背景・具体的な備え方をさらに詳しく解説した記事を公開しています。
-            </p>
-            <a
-              href="https://note.com/urbansurvivor"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-survivor-primary hover:underline"
-            >
-              家庭防災の連載記事を読む
-              <ExternalLink size={14} />
-            </a>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* History Chart */}
       {history.length > 1 && (
