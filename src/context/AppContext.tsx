@@ -117,8 +117,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     // CSV非同期フェッチ
+    // fetch()はHTTPエラー(404/429等)ではreject しないため、res.okを明示チェックしないと
+    // エラーページ本文がCSVとして渡り、catch()のフォールバックが働かないまま読み込み中の
+    // まま止まる可能性がある。利用者が増えた際にGoogle Sheetsの公開CSV書き出しが
+    // レート制限等でエラーを返すケースに備えた防御。
     fetch(CSV_URL)
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`CSV fetch failed: ${res.status}`);
+        }
+        return res.text();
+      })
       .then(csvText => {
         Papa.parse(csvText, {
           header: true,
