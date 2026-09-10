@@ -6,19 +6,7 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 import { getMaxScore, getPersonalizedHint, shouldAutoSkip } from '../utils/personalization';
-
-const CATEGORY_NAMES: Record<string, string> = {
-  organize: '組織体制',
-  risk: 'リスクの把握',
-  finance: '財政基盤',
-  design: '都市開発・設計',
-  environment: '自然の緩衝機能',
-  capacity: '組織能力強化',
-  society: '社会的能力',
-  lifeline: 'インフラ強靭化',
-  response: '効果的な災害対応',
-  recovery: '復興の迅速化',
-};
+import { categoryLabels } from '../utils/scoreCalculator';
 
 const CATEGORY_ORDER = [
   'organize',
@@ -59,7 +47,7 @@ export const Diagnosis: React.FC = () => {
   const progress = (currentIndex / activeQuestions.length) * 100;
 
   const categoryIndex = CATEGORY_ORDER.indexOf(question.category) + 1;
-  const categoryName = CATEGORY_NAMES[question.category] || '';
+  const categoryName = categoryLabels[question.category] || '';
   const personalizedHint = getPersonalizedHint(question, profile);
 
   const handleAnswer = (score: number) => {

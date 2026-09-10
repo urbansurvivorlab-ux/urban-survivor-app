@@ -137,7 +137,7 @@ export const Result: React.FC = () => {
           <div className="mt-4 p-4 rounded-xl bg-survivor-primary/10 border border-survivor-primary/20 flex items-start gap-3">
             <Users2 className="w-5 h-5 text-survivor-primary shrink-0 mt-0.5" />
             <p className="text-sm text-gray-300 leading-relaxed">
-              社会的能力の達成率{Math.round(societyRatio * 100)}%。あなたは自分の家族を守れるだけでなく、いざという時に近所や地域の誰かを助けられる側にいます。
+              「{categoryLabels.society}」の達成率{Math.round(societyRatio * 100)}%。あなたは自分の家族を守れるだけでなく、いざという時に近所や地域の誰かを助けられる側にいます。
             </p>
           </div>
         )}

@@ -18,17 +18,20 @@ questions.forEach((q) => {
   maxScores[q.category] += getMaxScore(q);
 });
 
+// UNDRR「Ten Essentials」の用語（都市・自治体スケール）をそのまま使うと家庭には
+// 分かりにくいため、実用書10章版の各章副題に合わせて家庭向けの呼び名に翻訳している。
+// 実用書側にも同じ呼び名を併記している（担当者報告/シン/20260909_スコアカード実用書_原稿_10章版.md）。
 export const categoryLabels: Record<Category, string> = {
-  organize: '組織体制',
-  risk: 'リスクの把握',
-  finance: '財政基盤',
-  design: '都市開発・設計',
-  environment: '自然の緩衝機能',
-  capacity: '組織能力強化',
-  society: '社会的能力',
-  lifeline: 'インフラ強靭化',
-  response: '効果的な災害対応',
-  recovery: '復興の迅速化'
+  organize: '家族の体制',
+  risk: '危険の把握',
+  finance: 'お金の備え',
+  design: '住まいの安全',
+  environment: '住む場所選び',
+  capacity: '訓練と実践',
+  society: '地域との協力',
+  lifeline: 'ライフライン',
+  response: '発災時の初動',
+  recovery: '生活再建'
 };
 
 export const calculateWeakPoints = (
