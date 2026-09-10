@@ -25,7 +25,20 @@ export const affiliateItems: Record<Category, AffiliateItem[]> = {
       asin: "B0CBB1P52J"
     }
   ],
-  risk: [],
+  risk: [
+    {
+      id: "risk_1",
+      name: "緊急地震速報受信機",
+      description: "強い揺れが到達する数秒〜数十秒前に知らせ、身を守る行動を取る時間を作る、自分の家のリスクにいち早く気づくための装置。",
+      asin: ""
+    },
+    {
+      id: "risk_2",
+      name: "感震ブレーカー 後付けタイプ",
+      description: "強い揺れを感知して自動的にブレーカーを落とし、地震後の停電復旧時に起こる通電火災のリスクを断つ後付け式の装置。",
+      asin: ""
+    }
+  ],
   finance: [
     {
       id: "fin_1",
@@ -81,7 +94,20 @@ export const affiliateItems: Record<Category, AffiliateItem[]> = {
       asin: "B000FVRGSI"
     }
   ],
-  society: [],
+  society: [
+    {
+      id: "soc_1",
+      name: "防災用 簡易無線機（トランシーバー）2台セット",
+      description: "スマホの通信網が混雑・断絶した際に、家族や近隣と直接連絡を取り合うための手段。ご近所との連携・共助の第一歩に。",
+      asin: ""
+    },
+    {
+      id: "soc_2",
+      name: "安否確認プレート（玄関掲示用）",
+      description: "「無事です／助けを求めています」を玄関等に掲示し、外から見て安否状況が分かるようにする、地域の見守り・共助のための表示具。",
+      asin: ""
+    }
+  ],
   lifeline: [
     {
       id: "life_1",
@@ -134,5 +160,12 @@ export const affiliateItems: Record<Category, AffiliateItem[]> = {
       asin: "B0D3DLL7NP"
     }
   ],
-  recovery: []
+  recovery: [
+    {
+      id: "rec_1",
+      name: "重要書類・写真データ保管用 防水ポーチ",
+      description: "罹災証明書の申請や保険手続きに必要な書類のコピー、被災前の家財を記録した写真データをまとめて保管し、生活再建の初動を早める防水ポーチ。",
+      asin: ""
+    }
+  ]
 };

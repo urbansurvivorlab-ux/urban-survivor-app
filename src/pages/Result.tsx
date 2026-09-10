@@ -51,13 +51,19 @@ export const Result: React.FC = () => {
   };
 
   // 履歴グラフ用のデータ整形 (直近5件を表示)
+  // 同じ日に複数回診断すると「MM/dd」ラベルが重複して見分けが付かなくなるため、
+  // 表示対象に同日の記録が複数あれば時刻も付けて区別できるようにする
   const historyData = useMemo(() => {
-    return history
-      .slice(-5)
-      .map(record => ({
-        date: format(new Date(record.date), 'MM/dd'),
-        score: record.totalScore
-      }));
+    const recent = history.slice(-5);
+    const dayCounts = recent.reduce<Record<string, number>>((acc, record) => {
+      const day = format(new Date(record.date), 'MM/dd');
+      acc[day] = (acc[day] || 0) + 1;
+      return acc;
+    }, {});
+    return recent.map(record => ({
+      date: format(new Date(record.date), dayCounts[format(new Date(record.date), 'MM/dd')] > 1 ? 'MM/dd HH:mm' : 'MM/dd'),
+      score: record.totalScore
+    }));
   }, [history]);
 
   // レーダーチャート用のデータ整形

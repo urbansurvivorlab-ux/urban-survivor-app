@@ -59,7 +59,15 @@ export const officialLinks: Record<Category, OfficialLink[]> = {
       description: "地震の揺れによる家具の下敷きを防ぐため、効果的なL字金具や突っ張り棒の正しい使用法を解説。"
     }
   ],
-  environment: [],
+  environment: [
+    {
+      id: "env_link_1",
+      title: "ハザードマップポータルサイト（重ねるハザードマップ）",
+      url: "https://disaportal.gsi.go.jp/",
+      source: "国土交通省",
+      description: "今の住まいや検討中の土地が、水害・土砂災害・地盤の面でどんな自然条件の上に立っているかを地図で確認できます。住む場所を選ぶ・見直す際の基礎資料です。"
+    }
+  ],
   capacity: [
     {
       id: "cap_link_1",

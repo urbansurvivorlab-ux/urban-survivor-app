@@ -73,8 +73,12 @@ export const Mission: React.FC = () => {
                <div className="w-8 h-8 rounded-full border-4 border-survivor-accent border-t-transparent animate-spin"></div>
                <p className="text-gray-400 font-bold animate-pulse">最新の防衛装備リストを本部（スプレッドシート）から受信中...</p>
              </div>
+          ) : weakPoints.length > 0 && !weakPoints.some(wp => affiliateItems[wp.name].length > 0) ? (
+            <div className="text-gray-400 text-sm p-4 text-center border border-white/5 rounded-xl bg-[#1e293b]/30">
+              現在この弱点カテゴリに対応する推奨装備は準備中です。下記の公式情報も参考にしてください。
+            </div>
           ) : weakPoints.length > 0 ? (
-            weakPoints.map(wp => (
+            weakPoints.filter(wp => affiliateItems[wp.name].length > 0).map(wp => (
               <div key={wp.name} className="space-y-3">
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-survivor-accent/20">
                   <h3 className="font-bold text-lg text-white">【{wp.label}】の推奨防衛装備</h3>

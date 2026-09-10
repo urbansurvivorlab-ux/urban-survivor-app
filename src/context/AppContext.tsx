@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { UserProfile, Category, HistoryRecord } from '../types';
 import type { AffiliateItem } from '../data/affiliateItems';
+import { affiliateItems as staticAffiliateItems } from '../data/affiliateItems';
 import { questions } from '../data/questions';
 import { maxScores } from '../utils/scoreCalculator';
 import Papa from 'papaparse';
@@ -151,17 +152,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 }
              });
 
-             setState(prev => ({ ...prev, affiliateItems: itemsByCategory }));
+             // Google Sheet側のcategory列が古いカテゴリ名のままだったり空だったりすると、
+             // そのカテゴリだけ商品が0件になり、ミッション画面に見出しだけ残って中身が
+             // 空という壊れた見た目になる。シートから1件も取れなかったカテゴリは、
+             // 同梱の静的データ（affiliateItems.ts）で補う。
+             const merged = { ...itemsByCategory };
+             (Object.keys(merged) as Category[]).forEach((cat) => {
+               if (merged[cat].length === 0 && staticAffiliateItems[cat].length > 0) {
+                 merged[cat] = staticAffiliateItems[cat];
+               }
+             });
+
+             setState(prev => ({ ...prev, affiliateItems: merged }));
           }
         });
       })
       .catch(e => {
          console.error('Failed to load affiliate CSV:', e);
-         // フォールバックとして空配列などを入れる（実際には元のTSファイルを使っても良い）
-         setState(prev => ({ ...prev, affiliateItems: {
-           organize: [], risk: [], finance: [], design: [], environment: [],
-           capacity: [], society: [], lifeline: [], response: [], recovery: []
-         } }));
+         // シート自体が読めない場合は、同梱の静的データをそのままフォールバックにする
+         setState(prev => ({ ...prev, affiliateItems: staticAffiliateItems }));
       });
   }, []);
 
