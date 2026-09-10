@@ -4,12 +4,12 @@ import type { Question, UserProfile } from '../types';
 export const getMaxScore = (question: Question): number =>
   Math.max(...question.options.map((o) => o.score));
 
-// 世帯情報から見て「該当なし」が明らかな設問は自動的に満点扱いでスキップする。
-// 対象は、もともと選択肢に「子どもはいない／ペットはいない」等の最大スコア救済がある設問のみ
-// （新しい設問を追加するのではなく、既存の救済ロジックを自動化する）。
+// 世帯情報から見て「該当なし」が明らかな設問のうち、実用書50問には含まれない
+// アプリ限定の追加設問（care_1・care_2）だけを自動スキップの対象にする。
+// org_3（子どもの引き渡しルール）・org_4（ペットの同行避難）は実用書50問に含まれる設問のため、
+// 自動スキップすると世帯によって出題数が50問から変動してしまう（例：子ども・ペットがいない世帯で48問になる）。
+// 本文と同じ「該当なしの場合は自分で選ぶ」設計に揃え、常に50問（+該当する追加設問）を維持する。
 const AUTO_SKIP_RULES: Record<string, (profile: UserProfile) => boolean> = {
-  org_3: (profile) => profile.children === 0, // 子どもの引き渡しルール
-  org_4: (profile) => profile.pets === '0',   // ペットの同行避難
   care_1: (profile) => profile.elderly === 0,  // 高齢者の避難時介助・投薬管理（アプリ限定設問）
   care_2: (profile) => profile.disabled === 0, // 身体障がい者・要配慮者の福祉避難所登録（アプリ限定設問）
 };
