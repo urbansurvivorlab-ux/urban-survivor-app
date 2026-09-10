@@ -94,13 +94,13 @@ export const Result: React.FC = () => {
         </p>
       </div>
 
-      <Card className="max-w-md mx-auto mb-8 relative overflow-hidden">
+      <Card className="max-w-md mx-auto mb-8 relative">
         <h3 className="font-bold text-white mb-6 text-center">カテゴリ別スコア</h3>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+            <RadarChart cx="50%" cy="50%" outerRadius="60%" data={data}>
               <PolarGrid stroke="#ffffff33" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#F8FAFC', fontSize: 12, fontWeight: 'bold' }} />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: '#F8FAFC', fontSize: 11, fontWeight: 'bold' }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
               <Radar 
                 name="Score" 
