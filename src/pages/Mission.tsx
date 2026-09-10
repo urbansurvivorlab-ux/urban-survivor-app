@@ -17,7 +17,10 @@ export const Mission: React.FC = () => {
   // アフィリエイトタグ
   const affiliateTag = "urbansurviv07-22";
 
-  const getAmazonUrl = (asin: string) => `https://www.amazon.co.jp/dp/${asin}?tag=${affiliateTag}`;
+  // 個別商品ページ（/dp/ASIN）は廃盤・在庫切れでリンク切れになりやすいため、
+  // Amazon公式の「検索結果ページへのリンク」機能（/s?k=キーワード&tag=...）を使う。
+  // 同じ24時間の追跡クッキーが働き、対象商品が売り切れても検索結果自体は常に表示されるため壊れない。
+  const getAmazonUrl = (keyword: string) => `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}&tag=${affiliateTag}`;
 
   return (
     <div className="py-6 animate-fade-in pb-20">
@@ -93,7 +96,7 @@ export const Mission: React.FC = () => {
                 
                 <div className="flex items-center justify-center shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <a 
-                    href={getAmazonUrl(item.asin)} 
+                    href={getAmazonUrl(item.name)} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-full"
@@ -131,7 +134,7 @@ export const Mission: React.FC = () => {
                     
                     <div className="flex items-center justify-center shrink-0 w-full md:w-auto mt-4 md:mt-0">
                       <a 
-                        href={getAmazonUrl(item.asin)} 
+                        href={getAmazonUrl(item.name)} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-full"
