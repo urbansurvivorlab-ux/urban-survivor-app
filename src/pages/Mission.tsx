@@ -62,7 +62,7 @@ export const Mission: React.FC = () => {
         <div className="flex items-start gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/5">
           <Info className="w-4 h-4 text-gray-500 shrink-0 mt-0.5" />
           <p className="text-sm text-gray-500 leading-relaxed">
-            [PR] 以下の商品リンクはAmazonアソシエイト・プログラムを利用した広告リンクです。購入いただくと、当サイト運営者に紹介料が支払われる場合があります。
+            以下の商品リンクはAmazon.co.jpの商品ページへのリンクです（2026-09-12時点、アソシエイト提携は行っておらず、購入いただいても紹介料は発生しません）。
           </p>
         </div>
 
