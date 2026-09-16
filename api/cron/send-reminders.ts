@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { reminderTable } from '../_lib/supabase';
 import { sendReminderEmail } from '../_lib/email';
+import { anchorForDate, computeNextSendAt } from '../_lib/anniversary';
 
 // Vercel Cronから毎日呼ばれる。CRON_SECRETで、外部から誰でもトリガーできないように保護する。
 // （Vercel Cronは自動的に Authorization: Bearer <CRON_SECRET> を付けてリクエストする）
@@ -16,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const nowIso = new Date().toISOString();
 
     const { data: dueRows, error: selectError } = await reminderTable()
-      .select('id, email, manage_token, interval_months')
+      .select('id, email, manage_token, interval_months, next_send_at')
       .eq('active', true)
       .lte('next_send_at', nowIso)
       .limit(200); // 1回の実行での送信上限（現状の規模ではこれで十分すぎる）
@@ -27,10 +28,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     for (const row of dueRows ?? []) {
       try {
-        await sendReminderEmail(row.email, row.manage_token);
+        // 送信対象だったnext_send_atが記念日（1/17・3/11・9/1）ちょうどにスナップされていれば、
+        // そのメールにその日ならではの内容（171体験利用の案内等）を差し込む
+        const anchor = anchorForDate(new Date(row.next_send_at));
+        await sendReminderEmail(row.email, row.manage_token, anchor);
+
         const intervalMonths = row.interval_months || 6;
-        const nextSendAt = new Date();
-        nextSendAt.setMonth(nextSendAt.getMonth() + intervalMonths);
+        const { date: nextSendAt } = computeNextSendAt(new Date(nowIso), intervalMonths);
 
         const { error: updateError } = await reminderTable()
           .update({ last_sent_at: nowIso, next_send_at: nextSendAt.toISOString() })

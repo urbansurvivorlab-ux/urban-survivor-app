@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import type { AnniversaryKind } from './anniversary';
 
 let cachedClient: Resend | null = null;
 
@@ -48,18 +49,57 @@ ${footer(manageToken)}`,
   });
 }
 
-export async function sendReminderEmail(email: string, manageToken: string) {
+// 防災の記念日は、悲しみを利用するのではなく「その日を、備えを見直すきっかけにする」という
+// 建設的な文脈にとどめる。171体験利用期間（1/17・9/1）は実際に手を動かせる行動として案内する。
+function reminderContent(anchor: AnniversaryKind): { subject: string; intro: string } {
+  switch (anchor) {
+    case 'hanshin':
+      return {
+        subject: '1月17日、阪神・淡路大震災の日に——備えを見直す一日に',
+        intro: `1月17日は、阪神・淡路大震災が起きた日です。
+
+この日は「防災とボランティア週間」（1/15〜1/21）にあたり、災害用伝言ダイヤル（171）を実際に体験利用できる期間でもあります（171にかけて、録音・再生を試せます）。せっかくの機会なので、ご家族との連絡方法を実際に確認してみるのもおすすめです。`,
+      };
+    case 'tohoku':
+      return {
+        subject: '3月11日、東日本大震災の日に——備えを見直す一日に',
+        intro: `3月11日は、東日本大震災が起きた日です。
+
+前回の診断から時間が経ち、家族の状況や季節も変わっているかもしれません。この機会に、もう一度チェックしてみませんか。`,
+      };
+    case 'bousai':
+      return {
+        subject: '9月1日は「防災の日」——備えを見直す一日に',
+        intro: `9月1日は「防災の日」です。
+
+この日を含む「防災週間」（8/30〜9/5）は、災害用伝言ダイヤル（171）を実際に体験利用できる期間でもあります（171にかけて、録音・再生を試せます）。せっかくの機会なので、ご家族との連絡方法を実際に確認してみるのもおすすめです。`,
+      };
+    default:
+      return {
+        subject: '半年ぶりの防災力チェック、いかがですか？',
+        intro: `前回の診断から約6ヶ月が経ちました。
+
+家族の状況や季節が変わると、必要な備えも変わります。もう一度チェックして、我が家の弱点が変わっていないか確認してみませんか。`,
+      };
+  }
+}
+
+export async function sendReminderEmail(
+  email: string,
+  manageToken: string,
+  anchor: AnniversaryKind = null
+) {
   const resend = getResendClient();
   const from = process.env.RESEND_FROM_EMAIL;
   if (!from) throw new Error('RESEND_FROM_EMAIL が未設定です');
 
+  const { subject, intro } = reminderContent(anchor);
+
   await resend.emails.send({
     from: `${SENDER_NAME} <${from}>`,
     to: email,
-    subject: '半年ぶりの防災力チェック、いかがですか？',
-    text: `前回の診断から約6ヶ月が経ちました。
-
-家族の状況や季節が変わると、必要な備えも変わります。もう一度チェックして、我が家の弱点が変わっていないか確認してみませんか。
+    subject,
+    text: `${intro}
 
 再診断する：
 ${APP_URL}/profile

@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { reminderTable } from './_lib/supabase';
 import { sendWelcomeEmail } from './_lib/email';
+import { computeNextSendAt } from './_lib/anniversary';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,13 +34,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const { error: updateError } = await reminderTable()
         .update({
           active: true,
-          next_send_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 6).toISOString(),
+          next_send_at: computeNextSendAt(new Date(), 6).date.toISOString(),
         })
         .eq('email', email);
       if (updateError) throw updateError;
     } else {
       const { data: inserted, error: insertError } = await reminderTable()
-        .insert({ email })
+        .insert({ email, next_send_at: computeNextSendAt(new Date(), 6).date.toISOString() })
         .select('manage_token')
         .single();
       if (insertError) throw insertError;
