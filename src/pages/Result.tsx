@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { format } from 'date-fns';
-import { ChevronRight, AlertCircle, TrendingUp, Users2, Share2, Check, BookOpen, ExternalLink } from 'lucide-react';
+import { ChevronRight, AlertCircle, TrendingUp, Users2, Share2, Check, BookOpen, ExternalLink, CreditCard } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
@@ -174,6 +174,30 @@ export const Result: React.FC = () => {
           </div>
         </Card>
       )}
+
+      {/* 家族の連絡カード（無料DL）への導線 */}
+      <Card className="max-w-md mx-auto mb-8 relative overflow-hidden">
+        <div className="flex items-start gap-3">
+          <div className="p-2.5 bg-survivor-primary/10 rounded-full text-survivor-primary shrink-0">
+            <CreditCard size={20} />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-bold text-white mb-1">家族の連絡カード（無料）</h4>
+            <p className="text-sm text-gray-400 leading-relaxed mb-3">
+              最終集合場所や「もし迷ったら」の判断を、家族で決めて子どもが持ち歩けるカードにしませんか。印刷してそのまま使える無料テンプレートです。
+            </p>
+            <a
+              href="/family-card.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-survivor-primary hover:underline"
+            >
+              無料テンプレートを見る
+              <ExternalLink size={14} />
+            </a>
+          </div>
+        </div>
+      </Card>
 
       {/* History Chart */}
       {history.length > 1 && (
