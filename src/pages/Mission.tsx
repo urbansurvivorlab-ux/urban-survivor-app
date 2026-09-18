@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, ChevronLeft, ShieldAlert, ChevronRight, HeartHandshake, Info } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ShieldAlert, ChevronRight, HeartHandshake, Info, BookOpen } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 import { calculateWeakPoints } from '../utils/scoreCalculator';
 import { officialLinks } from '../data/officialLinks';
+import { BOOK_AMAZON_URL, CATEGORY_CHAPTER } from '../utils/bookLink';
 
 export const Mission: React.FC = () => {
   const navigate = useNavigate();
@@ -114,6 +115,20 @@ export const Mission: React.FC = () => {
               </div>
             </Card>
                 ))}
+                {BOOK_AMAZON_URL && (
+                  <a
+                    href={BOOK_AMAZON_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-4 rounded-xl bg-survivor-primary/5 border border-survivor-primary/20 hover:bg-survivor-primary/10 transition-colors group"
+                  >
+                    <BookOpen className="w-5 h-5 text-survivor-primary shrink-0" />
+                    <span className="text-sm text-gray-300 flex-1">
+                      「{wp.label}」について、実用書の第{CATEGORY_CHAPTER[wp.name]}章でさらに詳しく解説しています。
+                    </span>
+                    <ExternalLink className="w-4 h-4 text-survivor-primary shrink-0 opacity-70 group-hover:opacity-100" />
+                  </a>
+                )}
               </div>
             ))
           ) : (

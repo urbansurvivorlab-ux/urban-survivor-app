@@ -7,13 +7,10 @@ import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAppContext } from '../context/AppContext';
 import { calculateWeakPoints, getLevelText, maxScores, categoryLabels } from '../utils/scoreCalculator';
+import { BOOK_AMAZON_URL, CATEGORY_CHAPTER } from '../utils/bookLink';
 import type { Category } from '../types';
 
 const SHARE_URL = 'https://urban-survivor-app.vercel.app/';
-
-// 実用書「都市型サバイバー 家庭防災スコアカード」のAmazon販売ページURL。
-// Kindle出版が完了しASINが発行されたらここに設定する。空の間は案内カード自体を表示しない。
-const BOOK_AMAZON_URL = '';
 
 export const Result: React.FC = () => {
   const navigate = useNavigate();
@@ -157,10 +154,23 @@ export const Result: React.FC = () => {
               <BookOpen size={20} />
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-white mb-1">もっと深く知りたい方へ</h4>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">
-                この診断のもとになったUNDRR「Ten Essentials」の考え方や、各項目の背景・具体的な備え方をさらに詳しく解説した実用書「都市型サバイバー 家庭防災スコアカード」を刊行しています。
-              </p>
+              {weakPoints.length > 0 ? (
+                <>
+                  <h4 className="font-bold text-white mb-1">
+                    あなたの弱点「{weakPoints[0].label}」を詳しく知るには
+                  </h4>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-3">
+                    実用書「都市型サバイバー 家庭防災スコアカード」の第{CATEGORY_CHAPTER[weakPoints[0].name]}章で、この弱点の背景と具体的な備え方を詳しく解説しています。
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h4 className="font-bold text-white mb-1">もっと深く知りたい方へ</h4>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-3">
+                    この診断のもとになった、世界の都市防災の考え方や、各項目の背景・具体的な備え方をさらに詳しく解説した実用書「都市型サバイバー 家庭防災スコアカード」を刊行しています。
+                  </p>
+                </>
+              )}
               <a
                 href={BOOK_AMAZON_URL}
                 target="_blank"
