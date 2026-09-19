@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import type { AnniversaryKind } from './anniversary';
+import { BOOK_AMAZON_URL } from '../../src/utils/bookLink';
 
 let cachedClient: Resend | null = null;
 
@@ -94,6 +95,13 @@ export async function sendReminderEmail(
   if (!from) throw new Error('RESEND_FROM_EMAIL が未設定です');
 
   const { subject, intro } = reminderContent(anchor);
+  const bookLine = BOOK_AMAZON_URL
+    ? `
+
+診断の背景や、各項目の具体的な備え方をさらに詳しく知りたい方へ。
+実用書「都市型サバイバー　家庭防災スコアカード：わが家の弱点が分かる本」も刊行しています。
+${BOOK_AMAZON_URL}`
+    : '';
 
   await resend.emails.send({
     from: `${SENDER_NAME} <${from}>`,
@@ -102,7 +110,7 @@ export async function sendReminderEmail(
     text: `${intro}
 
 再診断する：
-${APP_URL}/profile
+${APP_URL}/profile${bookLine}
 ${footer(manageToken)}`,
   });
 }
