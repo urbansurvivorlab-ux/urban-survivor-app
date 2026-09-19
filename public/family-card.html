@@ -1,0 +1,324 @@
+<title>家族の連絡カード</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --paper:#F7F1E0;
+    --card:#FFFDF5;
+    --ink:#2B2A22;
+    --ink-soft:#7A735C;
+    --accent:#D79E1E;
+    --accent-ink:#8A5E0A;
+    --accent-soft:#FBEDC4;
+    --urgent:#C15A3C;
+    --urgent-soft:#F7E3D9;
+    --line:#CBBF98;
+    --rule:#E6DEC0;
+    --shadow:0 1px 2px rgba(43,42,34,.06), 0 10px 24px rgba(43,42,34,.10);
+    --font-jp:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+    --font-mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-jp);
+    padding-block:36px 64px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding-inline:20px;}
+
+  /* ---- on-screen header (does not print) ---- */
+  .head{margin-bottom:34px;}
+  .eyebrow{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent-ink); display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:16px; height:2px; background:var(--accent);}
+  h1{
+    font-size:clamp(26px,4vw,34px); font-weight:900; margin:10px 0 8px; text-wrap:balance; letter-spacing:.01em;
+  }
+  .lede{font-size:15.5px; line-height:1.8; color:var(--ink-soft); max-width:62ch;}
+  .howto{
+    margin-top:20px; background:var(--card); border:1px solid var(--rule); border-radius:10px;
+    padding:16px 20px; box-shadow:var(--shadow); display:flex; gap:22px; flex-wrap:wrap; align-items:flex-start;
+  }
+  .howto ol{margin:6px 0 0; padding-left:1.2em; font-size:14px; line-height:1.9; color:var(--ink);}
+  .howto .htitle{font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--accent-ink); text-transform:uppercase;}
+  .printbtn{
+    font-family:var(--font-mono); font-weight:700; font-size:13px; letter-spacing:.03em;
+    background:var(--accent); color:#3A2600; border:none; border-radius:7px; padding:11px 20px;
+    cursor:pointer; box-shadow:0 2px 0 var(--accent-ink); align-self:center; white-space:nowrap;
+  }
+  .printbtn:hover{filter:brightness(1.05);}
+  .printbtn:active{transform:translateY(1px); box-shadow:0 1px 0 var(--accent-ink);}
+  .printbtn:focus-visible{outline:2px solid var(--urgent); outline-offset:2px;}
+
+  /* ---- print sheet ---- */
+  .sheet{display:flex; gap:28px; flex-wrap:wrap; margin-top:32px; align-items:flex-start;}
+  .slot{display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .slotlabel{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.1em;
+    color:var(--ink-soft); text-transform:uppercase;
+  }
+
+  .card{
+    width:85.6mm; height:54mm;
+    background:var(--card);
+    border:1.6px dashed var(--line);
+    border-radius:3.5mm;
+    box-shadow:var(--shadow);
+    padding:3.6mm 4.4mm;
+    position:relative;
+    display:flex; flex-direction:column;
+    font-size:6.2pt;
+    line-height:1.45;
+  }
+  .card ruby{ruby-align:center;}
+  .card rt{font-size:4.2pt; color:var(--ink-soft); font-weight:500;}
+
+  .card .badge{
+    position:absolute; top:3mm; right:3.6mm; display:flex; align-items:center; gap:2.2px;
+    font-family:var(--font-mono); font-size:4.2pt; font-weight:700; letter-spacing:.06em; color:var(--accent-ink);
+  }
+  .card .badge svg{width:7.5px; height:7.5px;}
+
+  .card .ctitle{font-size:10.5pt; font-weight:900; margin:0; line-height:1.2;}
+  .card .csub{
+    font-family:var(--font-mono); font-size:4.6pt; color:var(--ink-soft); letter-spacing:.1em;
+    text-transform:uppercase; margin-top:1mm;
+  }
+  .card .crule{height:1px; background:var(--rule); margin:1.8mm 0;}
+
+  .line-field{display:flex; align-items:baseline; gap:1.6mm; margin-bottom:1.5mm; white-space:nowrap;}
+  .line-field .flabel{font-weight:700; color:var(--ink); flex:0 0 auto;}
+  .line-field .fblank{flex:1 1 auto; border-bottom:1px solid var(--line); min-width:10mm; height:1em;}
+
+  .duo{display:flex; gap:3mm; margin-bottom:1.5mm;}
+  .duo .df{flex:1; min-width:0; display:flex; align-items:baseline; gap:1.2mm; white-space:nowrap;}
+  .duo .dlabel{font-weight:700; color:var(--ink); flex:0 0 auto;}
+  .duo .dblank{flex:1; border-bottom:1px solid var(--line); height:1em;}
+
+  .field{margin-bottom:2mm;}
+  .field:last-child{margin-bottom:0;}
+  .field .flabel{font-weight:700; color:var(--ink);}
+  .field .fhint{color:var(--ink-soft); font-size:5pt; margin-top:.6mm;}
+  .fill-line{
+    border-bottom:1px solid var(--line); height:3.4mm; margin-top:.8mm;
+  }
+  .field.urgent{
+    background:var(--urgent-soft); border-radius:2mm; padding:1.5mm 2mm; margin-top:auto;
+  }
+  .field.urgent .flabel{color:var(--urgent);}
+  .field.urgent .fill-line{border-bottom-color:#E0BBAC;}
+
+  /* back card */
+  .back .btitle{
+    font-family:var(--font-mono); font-size:6pt; font-weight:700; letter-spacing:.08em;
+    color:var(--accent-ink); text-transform:uppercase; border-bottom:1.4px solid var(--accent);
+    display:inline-block; padding-bottom:.5mm; margin-bottom:1.8mm;
+  }
+  .contactrow{display:flex; gap:3mm; margin-bottom:1.4mm;}
+  .contactrow .cf{flex:1; min-width:0;}
+  .contactrow .clabel{font-size:5.2pt; color:var(--ink-soft);}
+  .contactrow .fill-line{height:2.8mm;}
+  .snshint{font-size:4.6pt; color:var(--ink-soft); margin-top:.4mm;}
+  .snshint b{color:var(--accent-ink); font-weight:700;}
+
+  .dial171{
+    background:var(--accent-soft); border-radius:2mm; padding:1.5mm 2mm; margin-top:auto;
+    display:flex; flex-direction:column; gap:.8mm;
+  }
+  .dial171 .toprow{display:flex; gap:3mm; align-items:center;}
+  .dial171 .num{font-family:var(--font-mono); font-size:11.5pt; font-weight:700; color:var(--accent-ink); line-height:1;}
+  .dial171 .numsub{font-size:4.4pt; color:var(--ink-soft); margin-top:.4mm;}
+  .dial171 .steps{font-size:4.8pt; line-height:1.5;}
+  .dial171 .steps b{font-family:var(--font-mono); color:var(--ink);}
+  .dial171 .coinnote{font-size:4.4pt; color:var(--urgent); border-top:1px dashed #D8B15E; padding-top:.6mm;}
+
+  .cardfoot{
+    font-size:4.8pt; color:var(--ink-soft); margin-top:1.6mm; display:flex; align-items:center; gap:2.4mm;
+  }
+  .cardfoot .qr{flex:0 0 auto; width:9mm; height:9mm; background:#fff; padding:.6mm; border-radius:.8mm; border:1px solid var(--rule);}
+  .cardfoot .qr img, .cardfoot .qr canvas, .cardfoot .qr table{width:100% !important; height:100% !important;}
+  .cardfoot .footext{display:flex; flex-direction:column; gap:.4mm;}
+  .cardfoot .url{font-family:var(--font-mono); color:var(--accent-ink); font-size:4.8pt;}
+
+  /* ---- filled example (screen only) ---- */
+  .example{margin-top:40px;}
+  .example .extitle{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--ink-soft);
+    text-transform:uppercase; margin-bottom:10px;
+  }
+  .example .exnote{font-size:13.5px; color:var(--ink-soft); margin-bottom:14px; max-width:60ch; line-height:1.8;}
+  .card.filled .fblank, .card.filled .dblank{border-bottom:none;}
+  .card.filled .fillval{font-weight:700;}
+  .card.filled .field.urgent .fillval{color:var(--urgent); font-size:6.6pt;}
+
+  @media (max-width:640px){
+    .sheet{gap:20px;}
+  }
+
+  @media print{
+    body{background:#fff; padding:0;}
+    .no-print{display:none !important;}
+    .wrap{max-width:none; padding:0;}
+    .sheet{gap:8mm; margin-top:0;}
+    .card{box-shadow:none;}
+    @page{ margin:12mm; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="head no-print">
+    <div class="eyebrow">無料DLテンプレート・A案（改訂版）</div>
+    <h1>家族の連絡カード</h1>
+    <p class="lede">『都市型サバイバー』第13話でララが握りしめていた、あの一枚。あらかじめ家族で決めた「最終的な集合場所」と「迷ったときの判断」を、子どもが一人でも読み返せるカードにしました。運転免許証と同じサイズです。サトシからのフィードバックを受け、本人情報・公衆電話メモ・QRコード・SNS連絡先の4点を追加しました。</p>
+    <div class="howto">
+      <div>
+        <div class="htitle">つくりかた</div>
+        <ol>
+          <li>下の「①おもて」「②うら」を、この画面のまま印刷する</li>
+          <li>点線に沿って2枚とも切り取る</li>
+          <li>おもてを空欄のまま、家族で相談しながら書き込む</li>
+          <li>2枚を背中合わせにして、ラミネート加工する（両面印刷できるプリンタなら1枚に直接印刷してもOK）</li>
+        </ol>
+      </div>
+      <button class="printbtn" onclick="window.print()">印刷する</button>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="slot">
+      <div class="slotlabel no-print">① おもて</div>
+      <div class="card front">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l2 4-2 4-2-4z"/></svg>
+          URBAN SURVIVOR
+        </div>
+        <p class="ctitle"><ruby>家族<rt>かぞく</rt></ruby>の<ruby>連絡<rt>れんらく</rt></ruby>カード</p>
+        <div class="csub">MY FAMILY, MY PLAN</div>
+        <div class="crule"></div>
+
+        <div class="duo">
+          <div class="df"><span class="dlabel"><ruby>名前<rt>なまえ</rt></ruby>：</span><span class="dblank"></span></div>
+          <div class="df" style="flex:0 0 20mm;"><span class="dlabel"><ruby>血液型<rt>けつえきがた</rt></ruby>：</span><span class="dblank"></span><span class="dlabel">型</span></div>
+        </div>
+        <div class="line-field">
+          <span class="flabel">アレルギー・お<ruby>薬<rt>くすり</rt></ruby>：</span>
+          <span class="fblank"></span>
+        </div>
+
+        <div class="line-field">
+          <span class="flabel"><ruby>最終<rt>さいしゅう</rt></ruby><ruby>集合<rt>しゅうごう</rt></ruby><ruby>場所<rt>ばしょ</rt></ruby>：</span>
+          <span class="fblank"></span>
+        </div>
+
+        <div class="field urgent">
+          <div class="flabel">もし<ruby>迷<rt>まよ</rt></ruby>ったら、わたしの<ruby>判断<rt>はんだん</rt></ruby>：</div>
+          <div class="fill-line"></div>
+          <div class="fhint">れい：ここで<ruby>待<rt>ま</rt></ruby>つ／<ruby>先生<rt>せんせい</rt></ruby>と<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>動<rt>うご</rt></ruby>く</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="slotlabel no-print">② うら</div>
+      <div class="card back">
+        <div class="btitle"><ruby>緊急<rt>きんきゅう</rt></ruby><ruby>連絡先<rt>れんらくさき</rt></ruby></div>
+        <div class="contactrow">
+          <div class="cf"><div class="clabel"><ruby>母<rt>かあ</rt></ruby>さん</div><div class="fill-line"></div></div>
+          <div class="cf"><div class="clabel"><ruby>父<rt>とう</rt></ruby>さん</div><div class="fill-line"></div></div>
+        </div>
+        <div class="contactrow">
+          <div class="cf">
+            <div class="clabel"><ruby>親戚<rt>しんせき</rt></ruby></div>
+            <div class="fill-line"></div>
+            <div class="snshint"><b>◯</b>でかこむ：でんわ／LINE／X</div>
+          </div>
+        </div>
+        <div class="line-field" style="margin-top:1.2mm;">
+          <span class="flabel" style="font-weight:500; font-size:5.2pt;"><ruby>学校<rt>がっこう</rt></ruby>・<ruby>保育園<rt>ほいくえん</rt></ruby>の<ruby>引<rt>ひ</rt></ruby>き<ruby>渡<rt>わた</rt></ruby>し：</span>
+          <span class="fblank"></span>
+        </div>
+        <div class="dial171">
+          <div class="toprow">
+            <div>
+              <div class="num">171</div>
+              <div class="numsub"><ruby>災害用<rt>さいがいよう</rt></ruby><ruby>伝言<rt>でんごん</rt></ruby>ダイヤル</div>
+            </div>
+            <div class="steps">
+              ふきこみ：<b>171→1</b>→じたくの<ruby>電話<rt>でんわ</rt></ruby>ばんごう<br>
+              ききとり：<b>171→2</b>→じたくの<ruby>電話<rt>でんわ</rt></ruby>ばんごう
+            </div>
+          </div>
+          <div class="coinnote">※<ruby>公衆電話<rt>こうしゅうでんわ</rt></ruby>は<ruby>10円玉<rt>じゅうえんだま</rt></ruby>か<ruby>100円玉<rt>ひゃくえんだま</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby></div>
+        </div>
+        <div class="cardfoot">
+          <div class="qr" id="qr-back"></div>
+          <div class="footext">
+            <span>この<ruby>内容<rt>ないよう</rt></ruby>はアプリでも<ruby>確認<rt>かくにん</rt></ruby>できます</span>
+            <span class="url">urban-survivor-app.vercel.app</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="example no-print">
+    <div class="extitle">記入例（イメージ）</div>
+    <p class="exnote">第13話でララが実際に握りしめていたカードを、もし本人が書いていたら——という想定の記入例です。血液型・アレルギー欄はストーリー本文に記載が無いため、あくまで記入イメージとして一般的な例を入れています。空欄のテンプレートは、このように埋めて使います。</p>
+    <div class="sheet">
+      <div class="slot">
+        <div class="card front filled">
+          <div class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l2 4-2 4-2-4z"/></svg>
+            URBAN SURVIVOR
+          </div>
+          <p class="ctitle"><ruby>家族<rt>かぞく</rt></ruby>の<ruby>連絡<rt>れんらく</rt></ruby>カード</p>
+          <div class="csub">MY FAMILY, MY PLAN</div>
+          <div class="crule"></div>
+          <div class="duo">
+            <div class="df"><span class="dlabel"><ruby>名前<rt>なまえ</rt></ruby>：</span><span class="fillval">ララ</span></div>
+            <div class="df" style="flex:0 0 20mm;"><span class="dlabel"><ruby>血液型<rt>けつえきがた</rt></ruby>：</span><span class="fillval">A</span><span class="dlabel">型</span></div>
+          </div>
+          <div class="line-field">
+            <span class="flabel">アレルギー・お<ruby>薬<rt>くすり</rt></ruby>：</span>
+            <span class="fillval">とくになし</span>
+          </div>
+          <div class="line-field">
+            <span class="flabel"><ruby>最終<rt>さいしゅう</rt></ruby><ruby>集合<rt>しゅうごう</rt></ruby><ruby>場所<rt>ばしょ</rt></ruby>：</span>
+            <span class="fillval">〇〇小学校 たいいくかん</span>
+          </div>
+          <div class="field urgent">
+            <div class="flabel">もし<ruby>迷<rt>まよ</rt></ruby>ったら、わたしの<ruby>判断<rt>はんだん</rt></ruby>：</div>
+            <div class="fillval">ここで待つ。それが私の判断。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    function boot(){
+      try{
+        if(window.QRCode){
+          new QRCode(document.getElementById('qr-back'), {
+            text: 'https://urban-survivor-app.vercel.app/',
+            width: 96, height: 96,
+            colorDark: '#2B2A22', colorLight: '#FFFFFF',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        }
+      }catch(e){}
+    }
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+  })();
+</script>
