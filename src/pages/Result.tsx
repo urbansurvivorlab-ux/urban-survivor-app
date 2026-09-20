@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { ChevronRight, AlertCircle, TrendingUp, Users2, Share2, Check, BookOpen, ExternalLink } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
+import { ReminderSignup } from '../components/reminder/ReminderSignup';
 import { useAppContext } from '../context/AppContext';
 import { calculateWeakPoints, getLevelText, maxScores, categoryLabels } from '../utils/scoreCalculator';
 import { BOOK_AMAZON_URL, CATEGORY_CHAPTER } from '../utils/bookLink';
@@ -184,6 +185,9 @@ export const Result: React.FC = () => {
           </div>
         </Card>
       )}
+
+      {/* 半年ごとの再診断リマインド（任意登録・診断結果を見た直後に案内） */}
+      <ReminderSignup />
 
       {/* History Chart */}
       {history.length > 1 && (
