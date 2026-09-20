@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { Layout } from './components/layout/Layout';
 
 import { Home } from './pages/Home';
@@ -21,6 +22,7 @@ function App() {
           <Route path="/mission" element={<Mission />} />
         </Routes>
       </Layout>
+      <Analytics />
     </Router>
     </AppProvider>
   );
